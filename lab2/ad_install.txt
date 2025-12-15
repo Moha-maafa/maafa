@@ -1,0 +1,57 @@
+ACTIVITY 1 – INSTALL AND CONFIGURE AD, DNS, DHCP
+
+Open Server Manager
+Dashboard → Manage → Add Roles and Features
+Click Next until Server Roles
+
+Select server roles
+Active Directory Domain Services
+DNS Server
+DHCP Server
+For each role click Add Features
+Leave defaults → Next → Install
+
+After installation
+Return to Server Manager Dashboard
+Verify AD DS, DNS, DHCP are installed
+Notice the warning flag icon at the top
+
+Promote server to domain controller
+Click the flag icon
+Select “Promote this server to a domain controller”
+This opens the Active Directory Services Configuration Wizard
+
+Active Directory wizard setup
+Select Add a new forest
+When asked for root domain name, name it whatever .com
+(example: yourRITid.com)
+Click Next
+
+Password setup
+Enter Directory Services Restore Mode (DSRM) password
+Click Next
+
+DNS delegation
+You will be prompted to create a DNS delegation
+Do NOT select it
+Ignore the warning
+Click Next
+
+NetBIOS domain
+You will see the NetBIOS domain name
+Do NOT edit it
+It auto-fills based on the domain
+Click Next
+
+Finish AD installation
+Keep default paths
+Click Next until you reach Install
+Click Install
+Active Directory setup completes
+Server may restart
+Active Directory is now done
+
+CURRENT STATUS
+AD, DNS, DHCP installed
+Server promoted to domain controller
+Active Directory configuration complete
