@@ -1,0 +1,69 @@
+DHCP CONFIGURATION
+
+DHCP post-install
+Click the flag icon at the top of Server Manager
+Click “Complete DHCP configuration”
+Click Next
+Click Next again
+You will see Authorization at the top
+Leave it as is
+Click Commit
+Click Close
+
+Open DHCP manager
+Server Manager → Dashboard → Tools → DHCP
+
+Navigate to IPv4
+Expand the domain/server name
+Expand IPv4
+Right-click IPv4 → New Scope → Next
+
+Scope name
+Enter any name and description
+Click Next
+
+IP address range
+Enter Start IP address
+Enter End IP address
+Enter subnet mask
+Click Next
+
+Exclusions
+Exclude IPs to avoid conflicts
+Best practice: exclude 1–10
+Exclude default gateway 254
+This avoids conflicts with Windows, Rocky, pfSense
+Click Next
+
+Lease duration
+Keep default lease time: 8 days
+Click Next
+
+Gateway and DNS
+Select “Yes, I want to configure these options now”
+Click Next
+
+Default gateway
+Enter pfSense LAN interface IP
+Click Add
+Click Next
+
+DNS servers
+You will see the server IP already listed
+Add public DNS: 8.8.8.8
+Click Add
+Click Next
+
+WINS
+Do not configure WINS
+Click Next
+
+Activate scope
+Select “Yes, I want to activate this scope now”
+Click Next
+Click Finish
+
+DHCP STATUS
+DHCP configured
+Scope active
+Clients can now receive IP, gateway, and DNS automatically

@@ -1,0 +1,40 @@
+ACTIVITY 2 – CREATE A USER AND ADD TO DOMAIN ADMINS
+
+Open Active Directory Users and Computers
+Server Manager → Dashboard → Tools → Active Directory Users and Computers
+
+Create a new user
+Right-click the domain
+Select New → User
+Enter First name and Last name
+Leave Initial empty
+Username auto-fills
+Click Next
+
+Set password
+Enter password
+If you get an error, use: ABC!2345
+Uncheck “User must change password at next logon”
+Check “User cannot change password”
+Check “Password never expires”
+Click Next → Finish
+
+Verify user
+Click on the domain
+You should see the new user listed
+
+Add user to Domain Admins
+Right-click the new user
+Select Add to a group
+In the box, type: Domain
+Click Check Names
+Select Domain Admins (first one)
+Click OK
+
+Confirmation
+You will see a message that the user was successfully added to the group
+
+STATUS
+User created successfully
+User added to Domain Admins group
+User now has administrative privileges in the domain

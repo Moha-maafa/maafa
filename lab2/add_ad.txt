@@ -1,0 +1,81 @@
+ACTIVITY 3 – JOIN WINDOWS 11 TO THE DOMAIN
+
+Verify Windows 11 is using DHCP
+Open PowerShell or CMD
+Run:
+ipconfig /all
+Confirm:
+DHCP Enabled: Yes
+DNS Server = Windows Server IP
+DNS Suffix = yourdomain.com
+
+Join the domain
+Open PowerShell as Administrator
+Run:
+Add-Computer -DomainName yourdomain.com -Credential (Get-Credential)
+
+Credential prompt
+Enter Domain Admin credentials
+Example:
+administrator@yourdomain.com
+
+Enter password
+Click OK
+
+Restart
+Restart when prompted
+
+Login using domain account
+At login screen select Other User
+Login as:
+username@yourdomain.com
+
+Verify domain membership
+Open PowerShell
+Run:
+date
+$env:COMPUTERNAME
+(Get-WmiObject Win32_ComputerSystem).PartOfDomain
+Result must be: True
+
+
+PART B: POWERSHELL REMOTE SESSION
+
+Open PowerShell as Administrator on Windows 11
+
+Connect to the Domain Controller
+Use FQDN, not short name
+Run:
+Enter-PSSession -ComputerName dcname.yourdomain.com
+
+Verify remote session
+Prompt changes to server name
+
+Run AD command on server
+Run:
+date
+Get-ADDomain
+
+
+Create second OU
+Run (one line):
+New-ADOrganizationalUnit -Name OUname -Path "DC=yourdomain,DC=com" -ProtectedFromAccidentalDeletion $true
+
+Create user in OU
+Run:
+New-ADUser -Name "First Last" -GivenName First -Surname Last -UserPrincipalName user@yourdomain.com
+ -SamAccountName user -Path "OU=OUname,DC=yourdomain,DC=com"
+
+Add attributes (example)
+Run:
+Set-ADUser -Identity "CN=First Last,OU=OUname,DC=yourdomain,DC=com" -OfficePhone "1234"
+
+Repeat
+Create at least 4 users in second OU
+
+PowerShell history requirement
+Run:
+date
+$env:USERDNSDOMAIN
+$env:COMPUTERNAME
+Get-History
