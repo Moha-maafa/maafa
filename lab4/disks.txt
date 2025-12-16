@@ -1,0 +1,63 @@
+ACTIVITY 1 – SETTING UP THE STORAGE SERVER
+
+Create a new Linux VM
+Create a linked or full clone of the Rocky Linux VM
+Name it something meaningful (example: storage)
+
+Network configuration
+Place the VM on the LAN
+Assign a static IP from the DHCP excluded range
+Set a hostname:
+hostnamectl set-hostname storage
+
+Power off the VM
+Shut down the storage VM completely
+
+ADDING DISKS TO THE STORAGE SERVER
+
+Add hard disks
+Right-click the VM → Settings → Add → Hard Disk
+Select NVMe
+Select Create a new virtual disk
+Set disk size to 4 GB
+Click Next → Finish
+
+Repeat disk creation
+Repeat the process until 8 disks are added
+
+Power on the VM
+
+Verify disks
+Open terminal and run:
+hostname
+which mdadm
+date
+lsblk
+
+You should see nvme0n1 (system disk) and nvme0n2 through nvme0n9
+This screenshot is REQUIRED for the lab report
+
+ACTIVITY 2 – FORMATTING AND MOUNTING A DRIVE
+
+IMPORTANT
+Do NOT touch nvme0n1 (system disk)
+Start with nvme0n2
+
+Format the first data disk
+Run:
+mkfs -t xfs /dev/nvme0n2
+
+Create mount point
+Run:
+mkdir -p /media/samba
+
+Mount the disk
+Run:
+mount /dev/nvme0n2 /media/samba
+
+Verify mount
+Run:
+df -h
+mount | grep samba
+
+This screenshot is REQUIRED for the lab report

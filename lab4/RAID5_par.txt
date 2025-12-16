@@ -1,0 +1,85 @@
+RAID 5 WITH PARTITIONING (LAB 4 – GPT + GDISK)
+
+Become root
+sudo -i
+
+Create RAID 5 array
+mdadm --create /dev/md1 --level=5 --raid-devices=3 /dev/nvme0n5 /dev/nvme0n6 /dev/nvme0n7
+
+Verify RAID is active
+cat /proc/mdstat
+
+Expected: md1 active with 3 devices
+
+Start gdisk on the RAID device
+gdisk /dev/md1
+
+Create a new GPT partition table
+o
+y
+
+Create partition 1 (2GB)
+n
+1
+
+<Enter>
+
++2G
+<Enter>
+
+Create partition 2 (2GB)
+n
+2
+
+<Enter>
+
++2G
+<Enter>
+
+Create partition 3 (2GB)
+n
+3
+
+<Enter>
+
++2G
+<Enter>
+
+Verify partitions inside gdisk
+p
+
+Expected: md1p1 md1p2 md1p3 (each 2G)
+
+Write partition table and exit
+w
+y
+
+Verify partitions exist
+ls /dev | grep md1
+or
+fdisk -l | grep md1
+
+Expected:
+md1
+md1p1
+md1p2
+md1p3
+
+Format the partitions
+DO NOT format /dev/md1
+mkfs.xfs /dev/md1p1
+mkfs.xfs /dev/md1p2
+mkfs.xfs /dev/md1p3
+
+Create mount points
+mkdir -p /media/samba1
+mkdir -p /media/samba2
+mkdir -p /media/samba3
+
+Mount the partitions
+mount /dev/md1p1 /media/samba1
+mount /dev/md1p2 /media/samba2
+mount /dev/md1p3 /media/samba3
+
+Verify mounts (required screenshot)
+mount | grep md1

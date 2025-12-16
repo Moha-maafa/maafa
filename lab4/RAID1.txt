@@ -1,0 +1,113 @@
+ACTIVITY 3 – RAID 1 CREATION AND PARTITIONING
+
+PART A – CREATE RAID 1 ARRAY
+
+Become root
+Run:
+sudo -i
+
+Create RAID 1 array
+Use ONLY data disks (do not touch nvme0n1 or nvme0n2)
+Run:
+mdadm --create /dev/md0 --level=1 --raid-devices=2 /dev/nvme0n3 /dev/nvme0n4
+
+Verify RAID status
+Run:
+cat /proc/mdstat
+
+You should see:
+md0 active raid1 nvme0n3 nvme0n4
+
+
+PART B – PARTITION THE RAID DEVICE
+
+IMPORTANT
+You partition /dev/md0, NOT the individual NVMe disks.
+
+Start fdisk on the RAID device
+Run:
+fdisk /dev/md0
+
+Create a new DOS partition table
+Type:
+o
+Press Enter
+
+Create primary partition (1 GB)
+Type:
+n
+p
+1
+Press Enter
++1G
+Press Enter
+
+Create extended partition (rest of disk)
+Type:
+n
+e
+2
+Press Enter
+Press Enter
+
+Create logical partition inside extended
+Type:
+n
+Press Enter
+Press Enter
+
+Write changes
+Type:
+w
+Press Enter
+
+PART C – VERIFY PARTITIONS
+
+Verify partitions exist
+Run:
+ls /dev | grep md0
+or
+fdisk -l /dev/md0
+
+You should see:
+md0
+md0p1
+md0p2 (extended, DO NOT format)
+md0p5 (logical)
+
+NOTE
+md0p2 is the extended container
+Only format md0p1 and md0p5
+
+
+
+PART D – FORMAT PARTITIONS
+
+Format primary partition
+Run:
+mkfs.xfs /dev/md0p1
+
+Format logical partition
+Run:
+mkfs.xfs /dev/md0p5
+
+
+PART E – MOUNT RAID PARTITIONS
+
+Create mount points
+Run:
+mkdir -p /media/nfs1
+mkdir -p /media/nfs2
+
+Mount partitions
+Run:
+mount /dev/md0p1 /media/nfs1
+mount /dev/md0p5 /media/nfs2
+
+Verify mounts
+Run:
+df -h
+
+You should see:
+md0p1 mounted on /media/nfs1
+md0p5 mounted on /media/nfs2

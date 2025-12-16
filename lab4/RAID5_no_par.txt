@@ -1,0 +1,45 @@
+WITHOUT PARTITIONING (REAL-WORLD SIMPLE, NOT LAB 4 ACTIVITY 4)
+
+Use this only if an exam question says “format the array directly” or does not require partitioning.
+
+Become root
+sudo -i
+
+Create RAID 5
+mdadm --create /dev/md1 --level=5 --raid-devices=3 /dev/nvme0n5 /dev/nvme0n6 /dev/nvme0n7
+
+Verify
+cat /proc/mdstat
+
+Format md1 directly (only in this version)
+mkfs.xfs /dev/md1
+
+Mount
+mkdir -p /media/raid5
+mount /dev/md1 /media/raid5
+
+Quick redundancy test file
+echo "RAID5 test" > /media/raid5/test.txt
+cat /media/raid5/test.txt
+
+Simulate failure and verify data
+mdadm /dev/md1 -f /dev/nvme0n5 
+
+Lab04_Instructions (2)
+
+
+mdadm /dev/md1 -r /dev/nvme0n5 
+
+Lab04_Instructions (2)
+
+
+cat /proc/mdstat
+cat /media/raid5/test.txt
+
+Re-add drive and rebuild
+mdadm --manage /dev/md1 -a /dev/nvme0n5 
+
+Lab04_Instructions (2)
+
+
+cat /proc/mdstat

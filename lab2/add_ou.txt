@@ -1,0 +1,94 @@
+ACTIVITY 5 – CREATING ORGANIZATIONAL UNITS AND USERS
+(USING SERVER MANAGER / ADUC ONLY)
+
+PART A – OPEN ADUC
+
+Open Active Directory Users and Computers
+Server Manager → Dashboard → Tools
+Select Active Directory Users and Computers
+
+Expand the domain
+Click the domain name (yourdomain.com)
+
+PART B – CREATE ORGANIZATIONAL UNITS (OU)
+
+Create first OU
+Right-click the domain
+New → Organizational Unit
+Enter OU name
+Click OK
+
+Create second OU
+Right-click the domain
+New → Organizational Unit
+Enter second OU name
+Click OK
+
+PART C – CREATE USERS IN FIRST OU
+
+Create user
+Right-click first OU
+New → User
+Enter First name and Last name
+Leave Initial empty
+Click Next
+
+Set password
+Enter password
+Uncheck User must change password at next logon
+Check User cannot change password
+Check Password never expires
+Click Next → Finish
+
+Repeat
+Create at least four users in first OU
+
+PART D – CREATE USERS IN SECOND OU
+
+Create users
+Right-click second OU
+New → User
+Enter user information
+Set password with same settings
+Click Finish
+
+Repeat
+Create at least four users in second OU
+
+PART E – VERIFY OUs AND USERS
+
+Verify in ADUC
+Click each OU
+Confirm users are listed under correct OU
+
+PART F – POWERSHELL VERIFICATION (REQUIRED FOR LAB)
+
+Open PowerShell on the Domain Controller
+Run PowerShell as Administrator
+
+Run verification commands
+Run each command and keep output visible:
+date
+$env:USERDNSDOMAIN
+$env:COMPUTERNAME
+Get-History
+
+Screenshot requirement
+Screenshot must show:
+Current date
+Domain name
+Computer hostname
+PowerShell history showing user/OU creation commands
+
+PART G – ADD USER TO DOMAIN ADMINS (IF REQUIRED)
+
+Add user to Domain Admins
+Right-click user
+Add to a group
+Type: Domain
+Click Check Names
+Select Domain Admins
+Click OK
+
+Confirmation
+System confirms user added successfully

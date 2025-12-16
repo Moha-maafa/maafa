@@ -1,0 +1,74 @@
+ACTIVITY – CONFIGURE PERSISTENT MOUNTS FOR RAID 1
+
+use blkid to see UUID
+
+PART A – IDENTIFY PARTITIONS (REFERENCE)
+
+Primary partition
+Device: /dev/md0p1
+UUID: 9c7ae06c-a73a-4833-91e2-4616eafd6520
+Filesystem: xfs
+
+Logical partition
+Device: /dev/md0p5
+UUID: 63ffc99d-90ce-46f2-b81b-bce4d3a77bf8
+Filesystem: xfs
+
+(These UUIDs come from blkid output.)
+
+PART B – EDIT /etc/fstab
+
+Open fstab
+Run:
+nano /etc/fstab
+
+Add EXACTLY these two lines
+(Use spaces or tabs between columns; no quotes.)
+
+like that 
+UUID=9c7ae06c-a73a-4833-91e2-4616eafd6520 /media/nfs1 xfs defaults 0 0
+UUID=63ffc99d-90ce-46f2-b81b-bce4d3a77bf8 /media/nfs2 xfs defaults 0 0
+
+IMPORTANT CHECKS
+
+Mount directories already exist (/media/nfs1 and /media/nfs2)
+
+No typos in UUIDs
+
+No quotation marks
+
+Save and exit nano
+CTRL + O → Enter
+CTRL + X
+
+PART C – TEST WITHOUT REBOOT (REQUIRED)
+
+Test fstab entries
+Run:
+mount -a
+
+Expected result:
+No output = success
+Any error = fix the typo in /etc/fstab
+
+PART D – VERIFY
+
+Verify mounts
+Run:
+df -h
+
+You should see:
+/media/nfs1
+/media/nfs2
+
+PART E – REBOOT TEST (RECOMMENDED)
+
+Reboot
+Run:
+reboot
+
+Verify after reboot
+Run:
+df -h
+
+If both mount points are still listed, persistent mounts are working.

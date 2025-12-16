@@ -1,0 +1,225 @@
+CTIVITY 3 – INSTALL GITHUB CLI (gh) AND AUTHENTICATE
+
+Install GitHub CLI repository and package
+Run:
+curl -fsSL https://cli.github.com/packages/rpm/gh-cli.repo
+ | sudo tee /etc/yum.repos.d/github-cli.repo
+sudo dnf -y install gh
+
+Verify installation
+Run:
+gh --version
+
+Authenticate with GitHub
+Run:
+gh auth login
+
+Answer prompts exactly
+Where do you use GitHub? GitHub.com
+Preferred protocol for Git operations on this host? HTTPS
+Authenticate Git with your GitHub credentials? Yes
+How would you like to authenticate GitHub CLI? Paste an authentication token
+Paste the PAT created in Activity 2
+
+Verify success
+You should see:
+Configured git protocol
+Logged in as <your-github-username>
+
+Required verification command (for screenshot)
+Run:
+hostname; date; gh auth status
+
+SOURCE
+GitHub CLI: https://cli.github.com/manual/
+
+Lab 03 Activity 3 
+
+Lab03 (1)
+
+ACTIVITY 4 – GIT WORKFLOW (LOCAL → GITHUB)
+
+Create project directory
+Run:
+mkdir -p /home/student/nssa221_scripts
+
+Enter directory
+Run:
+cd /home/student/nssa221_scripts
+
+Initialize git repository
+Run:
+git init
+
+Copy script into repo
+Run:
+cp /home/student/ping_test.py .
+
+Stage files
+Run:
+git add *
+
+Verify staging
+Run:
+git status
+
+Commit changes
+Run:
+git commit -m "adding ping_test to repository."
+
+Rename branch to main
+Run:
+git branch -m main
+
+Add GitHub remote
+Run:
+git remote add origin https://github.com/
+<your-username>/nssa221_scripts.git
+
+Push to GitHub
+Run:
+git push -u origin main
+
+Verify
+Run:
+git status
+Output should say:
+nothing to commit, working tree clean
+
+SOURCE
+Git basics: https://git-scm.com/docs
+
+Lab 03 Activity 4 
+
+Lab03 (1)
+
+ACTIVITY 5 – USING COCKPIT (LOCAL)
+
+Check if Cockpit is installed
+Run:
+dnf list installed cockpit*
+
+Check cockpit socket
+Run:
+systemctl status cockpit.socket
+
+Enable and start cockpit
+Run:
+systemctl enable --now cockpit.socket
+
+Open Cockpit locally
+Open browser on Rocky VM
+Go to:
+https://127.0.0.1:9090
+
+Click Turn on administrative access
+Log in with system credentials
+
+Create a local user (GUI)
+System → Accounts → Create new account
+Full name: any name
+Username: lowercase, no spaces
+Shell: /bin/bash
+Authentication: Use password
+(Optional) Require password change
+Click Create
+
+Verify user
+Open Terminal
+Run:
+su - <newuser>
+Enter password
+Run:
+whoami
+Exit back to student:
+exit
+
+SOURCE
+Cockpit: https://cockpit-project.org/
+
+Lab 03 Activity 5 
+
+Lab03 (1)
+
+ACTIVITY 6 – CONNECT TO COCKPIT REMOTELY (WINDOWS 11)
+
+Open browser on Windows 11
+Go to:
+https://<rocky-ip>:9090
+Ignore HTTPS warning → Continue
+
+Log in
+Use student or wheel group user
+Confirm black banner shows administrative access
+
+Open web terminal
+Tools → Terminal
+
+Create user via command line
+Run:
+sudo useradd -m -c "Full Name" -s /bin/bash <newuser>
+
+Set password
+Run:
+sudo passwd <newuser>
+
+(Optional) Give sudo rights
+Run:
+sudo usermod -aG wheel <newuser>
+
+Verify account
+Run:
+id <newuser>
+su - <newuser>
+whoami
+exit
+
+SOURCE
+useradd: https://man7.org/linux/man-pages/man8/useradd.8.html
+
+Lab 03 Activity 6 
+
+Lab03 (1)
+
+ACTIVITY 7 – RECOVER ROOT PASSWORD (GRUB / SINGLE-USER MODE)
+
+Reboot system
+At GRUB menu press e
+
+Edit kernel line
+Find line starting with linux or linux16
+At the end append:
+rd.break enforcing=0
+
+Boot with changes
+Press Ctrl + X
+
+Remount filesystem read-write
+Run:
+mount -o remount,rw /sysroot
+
+Chroot into system
+Run:
+chroot /sysroot
+
+Reset root password
+Run:
+passwd root
+Confirm message:
+all authentication tokens updated successfully
+
+Trigger SELinux relabel
+Run:
+touch /.autorelabel
+
+Required verification output (for screenshot)
+Run:
+date; cat /etc/hostname; echo $$
+
+Exit and reboot
+Run:
+exit
+exit
+
+Login after reboot
+Log in as root using new password
