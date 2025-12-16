@@ -78,6 +78,7 @@ chgrp writers /srv/samba/ramones
 
 Set permissions
 chmod 2770 /srv/samba/ramones
+chmod g+rwx /media/samba/ramones
 
 Verify
 ls -ld /srv/samba/ramones
