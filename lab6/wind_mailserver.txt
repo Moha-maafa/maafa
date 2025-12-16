@@ -1,0 +1,186 @@
+STEP 1 — Download MailEnable
+
+Log in to Windows Server 2022 as Administrator.
+
+Open PowerShell (Run as Administrator) and run:
+
+Invoke-WebRequest -Uri https://www.mailenable.com/standard1054.exe -OutFile C:\Users\Administrator\Downloads\MailEnable-Standard.exe
+
+
+This downloads MailEnable Standard Edition 
+
+Lab06_Instructions (1)
+
+.
+
+STEP 2 — Install IIS (REQUIRED)
+
+Before installing MailEnable, install Web Server (IIS).
+
+Open Server Manager
+
+Click Add Roles and Features
+
+Select Role-based or feature-based installation
+
+Select the local server
+
+Under Roles, check:
+
+Web Server (IIS)
+
+Keep default features
+
+Install and finish
+
+MailEnable requires IIS or the install will fail 
+
+Lab06_Instructions (1)
+
+.
+
+STEP 3 — Install MailEnable
+
+Run MailEnable-Standard.exe
+
+Ignore registration popup
+
+Accept license
+
+Choose Standard Edition
+
+Enter:
+
+Name → anything
+
+Company → anything
+
+Click Next using default options
+
+STEP 4 — Post Office Setup
+
+When prompted for Post Office Details:
+
+Post Office Name → use your domain
+Example:
+
+maafa.com
+
+
+Enter a password (remember it)
+
+This defines the email domain 
+
+Lab06_Instructions (1)
+
+.
+
+STEP 5 — SMTP Connector Configuration
+
+When asked for SMTP settings:
+
+Domain Name → your domain (example: maafa.com)
+
+DNS Host → hostname of this server
+Example:
+
+server.maafa.com
+
+
+DNS Servers:
+
+If DNS is on the same server → 127.0.0.1
+
+You may also add 8.8.8.8 as secondary
+
+SMTP Port → 25 (leave default)
+
+Click Next until installation finishes 
+
+Lab06_Instructions (1)
+
+.
+
+STEP 6 — Open MailEnable Manager
+
+After install:
+
+Click Start Menu
+
+Open MailEnable
+
+Launch MailEnable Management
+
+STEP 7 — Create Mailboxes
+
+In MailEnable Manager:
+
+Expand Messaging Manager
+
+Expand Post Offices
+
+Click your domain (maafa.com)
+
+On the right panel, click Create Mailbox
+
+Create at least two users:
+
+starlord
+
+gamora
+
+Set passwords for each mailbox 
+
+Lab06_Instructions (1)
+
+.
+
+STEP 8 — DNS CONFIGURATION (MAIL WILL NOT WORK WITHOUT THIS)
+
+Open DNS Manager on Windows Server.
+
+A Record
+
+Create an A record:
+
+Name: server
+
+FQDN:
+
+server.maafa.com
+
+
+IP address → mail server IP
+
+MX Record
+
+Right-click the domain → New Mail Exchanger (MX):
+
+Host or child domain → leave blank
+
+Mail server FQDN:
+
+server.maafa.com
+
+
+Priority → 10
+
+MX record is required for email delivery 
+
+Lab06_Instructions (1)
+
+.
+
+STEP 9 — SERVER IS READY
+
+At this point:
+
+MailEnable is installed
+
+IIS is installed
+
+Mailboxes exist
+
+DNS A + MX records exist
+
+The mail server setup is complete

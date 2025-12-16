@@ -1,0 +1,145 @@
+Rocky Linux Email Client (Thunderbird) Setup
+STEP 1 — Install Thunderbird (Rocky Linux)
+
+On the Rocky Linux client, open a terminal:
+
+sudo dnf install -y thunderbird
+
+
+Launch it:
+
+thunderbird &
+
+
+(Lab requires installing and configuring an MUA on Rocky Linux) 
+
+Lab06_Instructions (1)
+
+STEP 2 — Open Account Settings
+
+In Thunderbird:
+
+Right-click Local Folders
+
+Click Settings
+
+STEP 3 — Add Mail Account
+
+In Account Settings:
+
+Click Account Actions
+
+Click Add Mail Account…
+
+STEP 4 — Enter User Info
+
+Example values:
+
+Your Name: Starlord
+
+Email Address: starlord@maafa.com
+
+Password: (mailbox password)
+
+Click Continue 
+
+Lab06_Instructions (1)
+
+STEP 5 — Automatic Configuration (Preferred)
+
+If DNS + MX are correct:
+
+Thunderbird will show Configuration Found
+
+Click Done
+
+This confirms DNS/MX discovery is working (lab notes this) 
+
+Lab06_Instructions (1)
+
+STEP 6 — Manual Configuration (If Auto Fails)
+
+Click Manual Configuration and set:
+
+Incoming
+
+Recommended for the lab:
+
+Protocol: IMAP
+
+Server: server.maafa.com
+
+Port: 143
+
+SSL: None
+
+Authentication: Normal password
+
+(POP3 is optional; IMAP is what the lab focuses on for traffic capture later) 
+
+Lab06_Instructions (1)
+
+Outgoing (SMTP)
+
+Server: server.maafa.com
+
+Port: 25
+
+SSL: None
+
+Authentication: Normal password
+
+Click Done 
+
+Lab06_Instructions (1)
+
+STEP 7 — Security Warning (Expected)
+
+Because TLS was not configured:
+
+Check “I understand the risks”
+
+Click Confirm
+
+Click Finish
+
+Lab says this warning is expected 
+
+Lab06_Instructions (1)
+
+STEP 8 — Verify Mailbox Loads
+
+You should see:
+
+Account listed on the left
+
+Inbox loads
+
+STEP 9 — Test Email Delivery
+
+Send a test email:
+
+To: starlord@maafa.com
+
+Subject: Test Email
+
+Confirm:
+
+Email sends
+
+Email arrives (in Inbox)
+
+Lab requires sending/receiving verification screenshots 
+
+Lab06_Instructions (1)
+
+Troubleshooting (Linux Client Commands)
+STEP 10 — Check DNS + Reachability
+
+Run:
+
+ping server.maafa.com
+
+nslookup server.maafa.com
+
+nslookup -type=mx maafa.com
