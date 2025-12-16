@@ -1,0 +1,120 @@
+STEP 1 – INSTALL SAMBA
+
+Install packages
+dnf install -y samba samba-client samba-common
+
+Verify install
+rpm -q samba samba-client samba-common
+
+STEP 2 – START SAMBA SERVICES
+
+Enable and start services
+systemctl enable --now smb nmb
+
+Check services
+systemctl status smb
+systemctl status nmb
+
+STEP 3 – OPEN FIREWALL (REQUIRED)
+
+Open Samba service
+firewall-cmd --permanent --add-service=samba
+
+Reload firewall
+firewall-cmd --reload
+
+Verify
+firewall-cmd --list-services
+You must see: samba
+
+STEP 4 – CREATE USERS (NO LOGIN)
+
+Create users
+for i in joey johnny deedee marky; do useradd -s /sbin/nologin $i; done
+
+Verify one user
+getent passwd joey
+
+STEP 5 – CREATE GROUP AND ADD USERS
+
+Create writers group
+groupadd writers
+
+Add users to group
+for i in joey johnny deedee; do usermod -aG writers $i; done
+
+Verify
+groups joey
+Expected: joey : joey writers
+
+STEP 6 – SET SAMBA PASSWORDS
+
+Create Samba passwords
+for i in joey johnny deedee marky; do smbpasswd -a $i; done
+
+Use a simple password (lab safe).
+
+STEP 7 – PREPARE RAID DIRECTORY
+
+Create directory on RAID 5
+mkdir -p /media/samba/ramones
+
+Set group and permissions
+chgrp writers /media/samba/ramones
+chmod g+rwx /media/samba/ramones
+
+Verify
+ls -ld /media/samba/ramones
+
+STEP 8 – ADD TEST FILES
+
+Create files
+echo "Hey Ho Let's Go" > /media/samba/ramones/lyrics.txt
+echo "Power Chords" > /media/samba/ramones/chords.txt
+
+STEP 9 – CONFIGURE SAMBA SHARE
+
+Edit config
+nano /etc/samba/smb.conf
+
+Add at the bottom
+
+[ramones]
+comment = Blitzkrieg Bop
+path = /media/samba/ramones
+read only = no
+write list = @writers
+
+Save and exit
+CTRL+O → Enter
+CTRL+X
+
+STEP 10 – CHECK CONFIG AND RESTART
+
+Validate config
+testparm
+You must see: Loaded services file OK.
+
+Restart Samba
+systemctl restart smb nmb
+
+Verify share
+smbclient -L localhost
+You should see: ramones
+
+STEP 11 – HANDLE SELINUX (EXAM SAFE)
+
+Set permissive
+setenforce 0
+
+Verify
+getenforce
+Expected: Permissive
+
+STEP 12 – ACCESS FROM WINDOWS
+
+On Windows File Explorer, go to
+
+
+)
+27)LoginasUsername:joeyPassword:Sambapassword28)CreateafilefromWindo

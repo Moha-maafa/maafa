@@ -1,0 +1,126 @@
+ILE SHARING WITH SAMBA (NO RAID)
+
+ASSUMPTIONS
+• Fresh Rocky Linux VM
+• Only Samba required
+• Normal directory (no RAID)
+
+STEP 1 – INSTALL SAMBA
+
+Install packages
+dnf install -y samba samba-client
+
+STEP 2 – START SAMBA SERVICES
+
+Enable and start services
+systemctl enable --now smb nmb
+
+Verify services
+systemctl status smb
+
+STEP 3 – OPEN FIREWALL (REQUIRED)
+
+Allow Samba through firewall
+firewall-cmd --permanent --add-service=samba
+
+Reload firewall
+firewall-cmd --reload
+
+Verify
+firewall-cmd --list-services
+Expected: samba
+
+STEP 4 – SET SELINUX (EXAM SAFE)
+
+Set SELinux to permissive
+setenforce 0
+
+Verify
+getenforce
+Expected: Permissive
+
+STEP 5 – CREATE USERS (NO LOGIN)
+
+Create users
+for i in joey johnny deedee marky; do useradd -s /sbin/nologin $i; done
+
+Verify one user
+getent passwd joey
+
+STEP 6 – CREATE GROUP AND ADD USERS
+
+Create writers group
+groupadd writers
+
+Add users to group
+usermod -aG writers joey
+usermod -aG writers johnny
+usermod -aG writers deedee
+
+Verify
+groups johnny
+Expected: johnny : johnny writers
+
+STEP 7 – CREATE SAMBA PASSWORDS
+
+Create Samba passwords
+for i in joey johnny deedee marky; do smbpasswd -a $i; done
+
+(Use a simple password for exam.)
+
+STEP 8 – CREATE SHARE DIRECTORY
+
+Create directory
+mkdir -p /srv/samba/ramones
+
+Set group ownership
+chgrp writers /srv/samba/ramones
+
+Set permissions
+chmod 2770 /srv/samba/ramones
+
+Verify
+ls -ld /srv/samba/ramones
+
+STEP 9 – CONFIGURE SAMBA SHARE
+
+Edit config file
+nano /etc/samba/smb.conf
+
+Add at the bottom
+
+[ramones]
+comment = Samba Share
+path = /srv/samba/ramones
+read only = no
+write list = @writers
+
+Save and exit
+CTRL+O → Enter
+CTRL+X
+
+STEP 10 – CHECK CONFIG AND RESTART
+
+Validate config
+testparm
+Expected: Loaded services file OK.
+
+Restart services
+systemctl restart smb nmb
+
+STEP 11 – TEST FROM LINUX
+
+Test share
+smbclient -U johnny //localhost/ramones
+
+Inside smb:
+put /etc/hosts test.txt
+ls
+exit
+
+STEP 12 – TEST FROM WINDOWS
+
+On Windows File Explorer, enter
+
+
+\\hostname\ramones
