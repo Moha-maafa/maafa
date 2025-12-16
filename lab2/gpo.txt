@@ -1,0 +1,189 @@
+Got it. Below is a clean, exam-style, step-by-step guide for GPOs, written exactly the way Lab 02 expects, no extra fluff, no guessing. This is what you would do during the exam if they say “Configure a GPO”.
+
+Everything here is taken directly from Lab 02 – Activity 6: Creating and Linking a Group Policy Object 
+
+Lab02_Instructions (2)
+
+.
+
+🛡️ GPOs — LAB 2 (EXAM STYLE)
+Goal (what the exam is testing)
+
+Create a Group Policy Object
+
+Link it to the domain
+
+Configure it to restrict user behavior
+
+Verify it applies on a domain user (NOT admin)
+
+✅ PREREQUISITES (assumed in exam)
+
+AD, DNS, DHCP already installed
+
+Windows Server is a Domain Controller
+
+At least one domain user exists
+
+Windows 11 client is joined to the domain
+
+🔹 STEP 1 — Open Group Policy Management
+
+On Windows Server:
+
+Server Manager → Tools → Group Policy Management
+
+
+This opens the Group Policy Management Console (GPMC) 
+
+Lab02_Instructions (2)
+
+.
+
+🔹 STEP 2 — Create and Link a GPO
+
+Expand:
+
+Forest → Domains → yourdomain.com
+
+
+Right-click the domain
+
+Select:
+
+Create a GPO in this domain, and Link it here…
+
+
+📌 This is critical — do NOT create it unlinked 
+
+Lab02_Instructions (2)
+
+.
+
+🔹 STEP 3 — Name the GPO
+
+Example (lab-style name):
+
+DenyControlPanel
+
+
+Click OK.
+
+The GPO now appears under the domain 
+
+Lab02_Instructions (2)
+
+.
+
+🔹 STEP 4 — Edit the GPO
+
+Right-click the new GPO
+
+Click Edit
+
+🔹 STEP 5 — Configure the Policy
+
+Navigate to:
+
+User Configuration
+ → Policies
+ → Administrative Templates
+ → Control Panel
+
+
+Double-click:
+
+Prohibit access to Control Panel and PC settings
+
+
+Set:
+
+Enabled
+
+
+Click Apply → OK 
+
+Lab02_Instructions (2)
+
+.
+
+🔹 STEP 6 — Apply GPO on Client
+
+On Windows 11 client:
+
+⚠️ Log in as a DOMAIN USER (NOT Domain Admin)
+
+Open Command Prompt and run:
+
+gpupdate
+
+
+(or log out & log back in) 
+
+Lab02_Instructions (2)
+
+.
+
+🔹 STEP 7 — Verify GPO Works
+
+On Windows 11 (domain user):
+
+Try to open:
+
+Control Panel
+
+
+Expected result:
+
+“This operation has been canceled due to restrictions…”
+
+✅ This confirms the GPO is applied 
+
+Lab02_Instructions (2)
+
+.
+
+🔹 STEP 8 — (Exam Bonus) Generate GPO Report
+
+Open PowerShell (Admin) on the server:
+
+Get-GPOReport -Name "DenyControlPanel" -ReportType HTML -Path C:\DenyCP.html
+
+
+Open the HTML file and verify:
+
+Details
+
+Links
+
+Settings
+
+This is required for the lab report and commonly tested 
+
+Lab02_Instructions (2)
+
+.
+
+🧠 EXAM TIPS (VERY IMPORTANT)
+
+GPOs do not apply to Domain Admins
+
+GPOs apply based on where they are linked
+
+User Configuration → affects users
+
+Computer Configuration → affects machines
+
+If it doesn’t work → run:
+
+gpupdate /force
+
+🏁 ONE-LINE EXAM SUMMARY
+
+Created and linked a GPO at the domain level, configured a user policy to restrict Control Panel access, and verified enforcement on a domain user workstation.
+
+If you want, next we can:
+
+Do desktop wallpaper GPO (also in Lab 2)
+
+Or practice “what would the exam ask” GPO scenarios
