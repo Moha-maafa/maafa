@@ -1,0 +1,46 @@
+#!/usr/bin/env python3
+
+import subprocess
+import os
+
+source = "/home/student/"
+destination = "/backup/student_home/"
+
+os.makedirs(destination, exist_ok=True)
+
+subprocess.run([
+    "rsync",
+    "-av",
+    "--delete",
+    source,
+    destination
+])
+
+
+
+cd /home/student
+nano backup_home.py
+Paste the script → save → exit.
+
+bash
+Copy code
+chmod +x backup_home.py
+./backup_home.py
+
+
+
+
+You are backing up a directory that contains a .git folder.
+That is not wrong, but in real systems you might exclude it.
+
+Example (NOT required unless asked):
+
+rsync -av --exclude='.git' /home/student/ /home/student/backup/
+
+
+
+
+How to CHECK if your shebang is actually working
+head -1 backup_home.py
+ls -l backup_home.py
+file backup_home.py

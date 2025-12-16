@@ -1,0 +1,29 @@
+nano backup_home.sh
+
+
+#!/bin/bash
+
+SOURCE="/home/student/"
+DEST="/backup/student_home/"
+
+mkdir -p "$DEST"
+
+rsync -av --delete "$SOURCE" "$DEST"
+
+
+chmod +x backup_home.sh
+
+
+sudo ./backup_home.sh
+
+
+
+
+Backup
+rsync -av "$SOURCE" "$DEST"
+
+Archive
+tar -czf backup.tar.gz "$SOURCE"
+
+Copy
+cp -a "$SOURCE" "$DEST"

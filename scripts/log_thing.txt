@@ -1,0 +1,64 @@
+Backup script using rsync with logging (Bash)
+#!/bin/bash
+
+SOURCE="/home/student/"
+DEST="/home/student/backup/"
+LOGFILE="/home/student/backup.log"
+
+mkdir -p "$DEST"
+
+rsync -av --delete "$SOURCE" "$DEST" >> "$LOGFILE" 2>&1
+
+echo "Backup completed on $(date)" >> "$LOGFILE"
+
+🧠 What this script does (line by line)
+#!/bin/bash
+
+
+Runs the script using the Bash shell.
+
+SOURCE="/home/student/"
+
+
+Directory being backed up.
+
+DEST="/home/student/backup/"
+
+
+Backup destination directory.
+
+LOGFILE="/home/student/backup.log"
+
+
+File where backup activity is logged.
+
+mkdir -p "$DEST"
+
+
+Creates the backup directory if it does not exist.
+
+rsync -av --delete "$SOURCE" "$DEST" >> "$LOGFILE" 2>&1
+
+
+Runs rsync
+
+Appends normal output to the log file
+
+2>&1 also logs errors
+
+echo "Backup completed on $(date)" >> "$LOGFILE"
+
+
+Adds a timestamp showing when the backup finished.
+
+✅ One-sentence exam explanation (perfect)
+
+This script uses rsync to back up /home/student and logs all output and errors to a log file for auditing.
+
+📄 How to view the log (if asked)
+cat backup.log
+
+
+or
+
+less backup.log

@@ -1,0 +1,97 @@
+CRONTAB STUDY GUIDE (TXT FORMAT)
+
+WHAT IS CRON / CRONTAB
+
+Cron is a Linux/Unix service that runs scheduled jobs automatically.
+Crontab is the file where scheduled jobs (cron jobs) are stored.
+
+Each user has their own crontab file.
+
+CRONTAB LINE FORMAT
+
+Each cron job uses this format:
+
+MIN HOUR DOM MON DOW COMMAND
+
+Fields meaning:
+
+MIN = Minute (0–59)
+HOUR = Hour (0–23)
+DOM = Day of Month (1–31)
+MON = Month (1–12)
+DOW = Day of Week (0–6, Sunday = 0)
+COMMAND = Full path to script or command
+
+SPECIAL SYMBOLS
+
+means every value
+, separates multiple values
+
+defines a range
+/ defines step values
+
+Examples:
+
+= every
+
+
+*/5 = every 5 units
+1-5 = from 1 through 5
+1,3,5 = specific values
+
+COMMON TIME PATTERNS
+
+Runs every minute
+
+0 * * * *
+Runs every hour (at minute 0)
+
+0 0 * * *
+Runs every day at midnight
+
+0 2 * * *
+Runs every day at 2:00 AM
+
+*/10 * * * *
+Runs every 10 minutes
+
+0 */6 * * *
+Runs every 6 hours
+
+0 0 1 * *
+Runs on the first day of every month
+
+0 3 * * 0
+Runs every Sunday at 3:00 AM
+
+HOW TO EDIT CRONTAB
+
+Open crontab editor:
+crontab -e
+
+List current cron jobs:
+crontab -l
+
+Remove all cron jobs:
+crontab -r
+
+IMPORTANT RULES (EXAM-SAFE)
+
+Always use FULL paths in commands
+Cron runs with a limited environment
+One job per line
+Lines starting with # are comments
+Save and exit editor to apply changes
+
+OUTPUT AND LOGGING
+
+Example with logging:
+
+0 2 * * * /home/student/backup_home.sh >> /home/student/cron.log 2>&1
+
+Explanation:
+
+appends output to a log file
+2>&1 sends error output to the same log file
+
+This is OPTIONAL but recommended for debugging.

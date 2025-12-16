@@ -1,0 +1,12 @@
+✅ Common exam schedules (YOU SHOULD KNOW THESE)
+Meaning	Cron time
+Every minute	* * * * *
+Every hour	0 * * * *
+Daily at midnight	0 0 * * *
+Daily at 2 AM	0 2 * * *
+Every Sunday	0 0 * * 0
+Every 5 minutes	*/5 * * * *
+
+
+✅ Example 1 — Run a backup script daily at 2 AM
+0 2 * * * /home/student/backup_home.sh

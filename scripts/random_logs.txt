@@ -1,0 +1,49 @@
+OPTION A — Backup + logging (rsync)
+#!/bin/bash
+
+LOG="/home/student/backup.log"
+
+rsync -av /home/student/ /home/student/backup/ >> "$LOG" 2>&1
+
+
+What it does:
+Backs up files and logs all output and errors.
+
+
+
+OPTION D — Use rsync built-in logging
+#!/bin/bash
+
+rsync -av /home/student/ /home/student/backup/ \
+  --log-file=/home/student/backup.log
+
+
+What it does:
+Uses rsync’s native logging featur
+
+
+
+#!/bin/bash
+
+SOURCE="/var/log/"
+DEST="/backup/logs/"
+LOGFILE="/backup/log_backup.log"
+
+mkdir -p "$DEST"
+
+rsync -av "$SOURCE" "$DEST" >> "$LOGFILE" 2>&1
+What it does
+Copies all system log files from /var/log to another directory and records the operation in a log file.
+
+
+
+✅ OPTION 4 — Copy only .log files (SMART EXAM ANSWER)
+Script
+#!/bin/bash
+
+mkdir -p /backup/logs
+cp -a /var/log/*.log /backup/logs/
+
+What it does
+
+Copies only .log files instead of the entire /var/log directory.

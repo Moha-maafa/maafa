@@ -1,0 +1,99 @@
+Every 5 minutes
+*/5 * * * * /path/to/script.sh
+
+Every 10 minutes
+*/10 * * * * /path/to/script.sh
+
+Every 30 minutes
+*/30 * * * * /path/to/script.sh
+
+Every hour
+0 * * * * /path/to/script.sh
+
+Every 2 hours
+0 */2 * * * /path/to/script.sh
+
+Every 6 hours
+0 */6 * * * /path/to/script.sh
+
+DAILY EXAMPLES
+
+Every day at midnight
+0 0 * * * /path/to/script.sh
+
+Every day at 2 AM
+0 2 * * * /path/to/script.sh
+
+Every day at 11:30 PM
+30 23 * * * /path/to/script.sh
+
+Every day at noon
+0 12 * * * /path/to/script.sh
+
+WEEKLY EXAMPLES
+
+Every Sunday at midnight
+0 0 * * 0 /path/to/script.sh
+
+Every Monday at 8 AM
+0 8 * * 1 /path/to/script.sh
+
+Every Friday at 6 PM
+0 18 * * 5 /path/to/script.sh
+
+WEEKDAY / WEEKEND EXAMPLES
+
+Every weekday (Mon–Fri) at 9 AM
+0 9 * * 1-5 /path/to/script.sh
+
+Every weekend (Sat & Sun) at 10 AM
+0 10 * * 6,0 /path/to/script.sh
+
+MONTHLY EXAMPLES
+
+First day of every month at midnight
+0 0 1 * * /path/to/script.sh
+
+15th of every month at 1 AM
+0 1 15 * * /path/to/script.sh
+
+Last quarter months (Jan, Apr, Jul, Oct) at 2 AM
+0 2 1 1,4,7,10 * /path/to/script.sh
+
+YEARLY EXAMPLES
+
+Once a year on January 1st at midnight
+0 0 1 1 * /path/to/script.sh
+
+MULTIPLE TIMES EXAMPLES
+
+At 2 AM and 2 PM every day
+0 2,14 * * * /path/to/script.sh
+
+At minutes 0, 15, 30, 45 every hour
+0,15,30,45 * * * * /path/to/script.sh
+
+LOGGING (COMMON IN LABS & EXAMS)
+
+Run every minute and save output
+
+/path/to/script.sh >> /home/student/cron.log 2>&1
+
+Run daily backup at 2 AM with logging
+0 2 * * * /home/student/backup.sh >> /home/student/backup.log 2>&1
+
+EXAM TRANSLATION PRACTICE
+
+“Every minute”
+
+“Every day”
+0 0 * * *
+
+“Every Sunday”
+0 0 * * 0
+
+“Every 5 minutes”
+*/5 * * * *
+
+“Every weekday”
+0 0 * * 1-5

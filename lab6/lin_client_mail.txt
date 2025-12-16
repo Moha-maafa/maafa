@@ -143,3 +143,8 @@ ping server.maafa.com
 nslookup server.maafa.com
 
 nslookup -type=mx maafa.com
+
+
+
+
+from wind client jsut go install thuderbird and just add the info and u in 

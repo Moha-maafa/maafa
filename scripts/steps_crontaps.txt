@@ -1,0 +1,47 @@
+STEPS TO CREATE A CRON JOB (TEXT VERSION)
+
+1. Make sure the script exists and works
+   Example:
+   /home/student/backup_home.sh
+
+2. Make the script executable
+   chmod +x /home/student/backup_home.sh
+
+3. Open the crontab editor
+   crontab -e
+
+4. If vim opens:
+   - Press i to start typing
+
+5. Add the cron job line
+   Example (run every day at 2 AM):
+   0 2 * * * /home/student/backup_home.sh >> /home/student/cron.log 2>&1
+
+    Add an EVERY-MINUTE cron job
+   * * * * * /home/student/backup_home.sh >> /home/student/cron_minute.log 2>&1
+
+6. Save and exit vim
+   - Press ESC
+   - Type :wq
+   - Press ENTER
+
+7. Verify the cron job
+   crontab -l
+
+8. Check the log file later
+   cat /home/student/cron.log
+
+
+
+
+   >> /home/student/cron_minute.log 2>&1
+Piece by piece
+>> /home/student/cron_minute.log
+Append all normal output (stdout) to the file cron_minute.log.
+(>> appends; it does not overwrite.)
+
+2>&1
+Send error messages (stderr, file descriptor 2) to the same place as normal output (stdout, file descriptor 1).
+
+In simple words
+“Put everything the command prints (success messages and errors) into one log file.”

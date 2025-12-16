@@ -1,0 +1,110 @@
+🟢 OPTION 1 — rsync with built-in logging (--log-file)
+
+(Very common, very clean)
+
+#!/bin/bash
+
+rsync -av --delete /home/student/ /home/student/backup/ \
+  --log-file=/home/student/backup.log
+
+What it does
+
+Backs up /home/student and automatically writes all activity to backup.log.
+
+📌 Source:
+https://man7.org/linux/man-pages/man1/rsync.1.html
+
+🟢 OPTION 2 — Simple copy using tar (NO rsync)
+
+(Sometimes taught for “archive backup”)
+
+#!/bin/bash
+
+tar -czf /home/student/backup.tar.gz /home/student
+
+What it does
+
+Creates a compressed archive of the home directory as a single backup file.
+
+📌 Source:
+https://www.gnu.org/software/tar/manual/
+
+🟢 OPTION 3 — cp recursive backup (VERY BASIC)
+
+(Still acceptable if rsync not required)
+
+#!/bin/bash
+
+cp -r /home/student /home/student_backup
+
+What it does
+
+Copies the entire home directory to another directory.
+
+⚠️ No permissions sync, no logging — but simple and valid.
+
+📌 Source:
+https://man7.org/linux/man-pages/man1/cp.1.html
+
+🟢 OPTION 4 — rsync + timestamped log (exam favorite)
+#!/bin/bash
+
+LOG="/home/student/backup_$(date +%F).log"
+
+rsync -av /home/student/ /home/student/backup/ >> "$LOG" 2>&1
+
+What it does
+
+Backs up the home directory and creates a dated log file.
+
+📌 Source:
+https://www.gnu.org/software/bash/manual/html_node/Command-Substitution.html
+
+🟢 OPTION 5 — One-liner command (tiny quiz space)
+rsync -av /home/student/ /home/student/backup/ > backup.log 2>&1
+
+What it does
+
+Runs a backup and saves output and errors to a log file.
+
+📌 Source:
+https://www.gnu.org/software/bash/manual/html_node/Redirections.html
+
+🧠 HOW TO CHOOSE ON THE EXAM (IMPORTANT)
+If the question says…	Use
+“backup script”	Option 1
+“log the backup”	Option 1 or 4
+“archive”	Option 2
+“simple backup”	Option 3
+“one command”	Option 5
+
+
+
+✅ OPTION 2 — dd disk or partition backup
+
+(Seen in storage / filesystem labs)
+
+Script
+#!/bin/bash
+dd if=/dev/sda1 of=/backup/sda1.img bs=4M status=progress
+
+What it does
+
+Creates a block-level image of a disk or partition.
+
+⚠️ Requires root.
+
+📚 Source:
+https://man7.org/linux/man-pages/man1/dd.1.html
+
+✅ OPTION 3 — dump filesystem backup
+
+(Older but still exam-tested sometimes)
+
+Script
+#!/bin/bash
+dump -0u -f /backup/home.dump /home
+
+What it does
+
+Performs a filesystem-level backup.

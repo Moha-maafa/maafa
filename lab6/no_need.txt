@@ -1,0 +1,217 @@
+Goal
+
+Configure Rocky Linux as a mail server
+
+Use Postfix (SMTP) to send mail
+
+Use Dovecot (IMAP/POP3) to receive mail
+
+Configure DNS (MX record)
+
+Verify mail works with Thunderbird
+
+ASSUMPTIONS
+
+Hostname of mail server:
+
+liny
+
+
+Domain:
+
+maafa.com
+
+
+Server IP:
+
+192.168.4.12
+
+1️⃣ Set Hostname (VERY IMPORTANT)
+hostnamectl set-hostname liny.maafa.com
+
+
+Log out and back in, then verify:
+
+hostname
+
+
+Must show:
+
+liny.maafa.com
+
+2️⃣ Install Mail Server Packages
+dnf install -y postfix dovecot
+
+3️⃣ Configure Postfix (SMTP)
+
+Edit Postfix main config:
+
+nano /etc/postfix/main.cf
+
+Find and set these values:
+myhostname = liny.maafa.com
+mydomain = maafa.com
+myorigin = $mydomain
+inet_interfaces = all
+inet_protocols = ipv4
+mydestination = $myhostname, localhost.$mydomain, localhost, $mydomain
+home_mailbox = Maildir/
+
+
+Save and exit.
+
+4️⃣ Configure Dovecot (IMAP + POP3)
+Enable mail protocols
+nano /etc/dovecot/dovecot.conf
+
+
+Make sure this line exists:
+
+protocols = imap pop3
+
+Configure mail location
+nano /etc/dovecot/conf.d/10-mail.conf
+
+
+Set:
+
+mail_location = maildir:~/Maildir
+
+Configure authentication
+nano /etc/dovecot/conf.d/10-auth.conf
+
+
+Set:
+
+disable_plaintext_auth = no
+auth_mechanisms = plain login
+
+5️⃣ Create Mail Users (EXAM REQUIRES THIS)
+
+Create at least two users:
+
+useradd johnny
+passwd johnny
+
+useradd joey
+passwd joey
+
+
+These users automatically become email accounts:
+
+johnny@maafa.com
+joey@maafa.com
+
+6️⃣ Start & Enable Mail Services
+systemctl enable --now postfix
+systemctl enable --now dovecot
+
+
+Verify:
+
+systemctl status postfix
+systemctl status dovecot
+
+
+Both must be active (running).
+
+7️⃣ Configure Firewall (REQUIRED)
+
+Open mail ports:
+
+firewall-cmd --permanent --add-service=smtp
+firewall-cmd --permanent --add-service=imap
+firewall-cmd --permanent --add-service=pop3
+firewall-cmd --reload
+
+
+Verify:
+
+firewall-cmd --list-services
+
+
+You must see:
+
+smtp imap pop3
+
+8️⃣ DNS Configuration (THIS IS WHY THUNDERBIRD WORKS)
+
+On your DNS server:
+
+A Record
+liny.maafa.com → 192.168.4.12
+
+MX Record
+maafa.com → liny.maafa.com (priority 10)
+
+
+Verify from Linux:
+
+nslookup -type=mx maafa.com
+
+
+You must see:
+
+liny.maafa.com
+
+9️⃣ Verify Mail Server (LOCAL TEST)
+telnet localhost 25
+
+
+Expected:
+
+220 liny.maafa.com ESMTP Postfix
+
+
+Exit:
+
+quit
+
+🔟 Linux Email Client (Thunderbird)
+Install Thunderbird
+dnf install -y thunderbird
+
+
+Launch:
+
+thunderbird &
+
+Add Mail Account
+
+Use ANY Linux user, for example johnny.
+
+Fill in:
+
+Name: Johnny
+
+Email: johnny@maafa.com
+
+Password: (Linux password)
+
+Thunderbird should auto-detect:
+
+Incoming: IMAP
+
+Server: liny.maafa.com
+
+Outgoing: SMTP
+
+Ports: 143 / 25
+
+Security: None
+
+If warning appears → Confirm / I understand risks
+
+1️⃣1️⃣ Test Email (EXAM CHECK)
+
+Send:
+
+From: johnny@maafa.com
+To: joey@maafa.com
+
+
+If joey receives it → ✅ DONE
+
+🧠 EXAM SUMMARY (MEMORIZE THIS)
+
+Installed Postfix and Dovecot on Rocky Linux, configured SMTP and IMAP services, created local users as mail accounts, configured DNS MX records, opened firewall ports, and verified mail delivery using Thunderbird.
