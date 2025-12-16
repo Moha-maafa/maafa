@@ -1,0 +1,107 @@
+File Transfer – FTP (Exam Style)
+
+Goal:
+
+Set up FTP on Rocky Linux
+
+Allow users to log in
+
+Transfer files
+
+Verify it works
+
+1️ Install FTP server (vsftpd)
+dnf install -y vsftpd
+
+ Start & enable the service
+systemctl enable --now vsftpd
+
+
+Check:
+
+systemctl status vsftpd
+
+ Configure the firewall
+firewall-cmd --add-service=ftp --permanent
+firewall-cmd --reload
+
+
+Verify:
+
+firewall-cmd --list-services
+
+
+You should see ftp.
+
+ Configure FTP (basic + exam-safe)
+
+Edit config:
+
+nano /etc/vsftpd/vsftpd.conf
+
+
+Make sure these lines are set:
+
+anonymous_enable=NO
+local_enable=YES
+write_enable=YES
+chroot_local_user=YES  ignore
+
+DONT TOUCH THEM
+
+
+Save & exit.
+
+ Restart FTP service
+systemctl restart vsftpd
+
+6️ Create a test user
+useradd ftpuser
+passwd ftpuser
+
+
+(Create a simple password for the exam.)
+
+7️ Test FTP from Linux (server or client)
+ftp localhost
+
+
+Login:
+
+Username: ftpuser
+Password: <password>
+
+
+Inside FTP:
+
+ls
+put /etc/hosts test.txt
+ls
+get test.txt
+bye
+
+
+ This proves upload + download work.
+
+8️ Test FTP from Windows (Command Line)
+
+Open CMD or PowerShell:
+
+ftp <linux-ip>
+
+
+Login as ftpuser.
+
+Test:
+
+put test.txt
+get test.txt
+bye
+
+(Optional) SELinux quick fix (if blocked)
+
+If uploads fail:
+
+setenforce 0
+
+

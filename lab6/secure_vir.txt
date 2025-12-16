@@ -1,0 +1,161 @@
+Install required packages
+dnf install -y httpd mod_ssl openssl
+
+systemctl enable --now httpd
+
+systemctl status httpd
+
+firewall-cmd --add-service=https --permanent
+firewall-cmd --reload
+
+firewall-cmd --list-services
+
+Verify:
+
+rpm -q openssl mod_ssl
+
+ Go to the correct directories (LAB STANDARD)
+cd /etc/pki/tls
+mkdir -p private certs
+
+ Generate the PRIVATE KEY (THIS IS THE COMMAND YOU ASKED FOR)
+openssl genrsa -des3 -out private.key 2048
+
+
+Enter a passphrase
+
+Remember it (Apache will ask for it)
+
+Verify:
+
+ls -l private.key
+
+4️ Create a Certificate Signing Request (CSR)
+openssl req -new -key private.key -out server.csr
+
+
+When prompted, use LAB-SAFE VALUES:
+
+Country Name: US
+State: NY
+Locality: Rochester
+Organization: RIT
+Organizational Unit: NSSA
+Common Name (IMPORTANT): store.maafa.com
+Email: anything@rit.edu
+
+
+ Common Name MUST match the URL
+
+ Create a SELF-SIGNED CERTIFICATE
+openssl x509 -req -days 365 \
+-in server.csr \
+-signkey private.key \
+-out server.crt
+
+
+Move files to correct lab locations:
+
+mv private.key /etc/pki/tls/private/
+mv server.crt /etc/pki/tls/certs/
+
+
+Verify:
+
+ls -l /etc/pki/tls/private/private.key
+ls -l /etc/pki/tls/certs/server.crt
+
+6 Configure Apache SSL (ssl.conf)
+
+Open:
+
+nano /etc/httpd/conf.d/ssl.conf
+
+
+Make sure these lines exist and point to YOUR files:
+
+SSLCertificateFile /etc/pki/tls/certs/server.crt
+SSLCertificateKeyFile /etc/pki/tls/private/private.key
+
+
+Save & exit.
+
+7️ Create the SECURE Virtual Host (LAB STYLE)
+
+Create:
+
+nano /etc/httpd/conf.d/store_ssl.conf
+
+
+Paste:
+
+<VirtualHost *:443>
+    ServerName store.maafa.com
+    DocumentRoot /var/www/html
+
+    SSLEngine on
+    SSLCertificateFile /etc/pki/tls/certs/server.crt
+    SSLCertificateKeyFile /etc/pki/tls/private/private.key
+</VirtualHost>
+
+
+Save & exit.
+
+8️ Open firewall for HTTPS
+firewall-cmd --add-service=https --permanent
+firewall-cmd --reload
+firewall-cmd --list-services
+
+
+You must see:
+
+https
+
+echo "Secure Web Server Works" > /var/www/html/index.html
+chmod 644 /var/www/html/index.html
+
+
+9️ SELinux (LAB ALLOWS PERMISSIVE)
+getenforce
+setenforce 0
+
+ Test Apache config
+apachectl configtest
+
+
+Expected:
+
+Syntax OK
+
+ Restart Apache (YOU WILL BE PROMPTED)
+systemctl restart httpd
+
+
+ Enter the passphrase you created in step 3.
+
+Verify:
+
+systemctl status httpd
+
+ Test in browser
+
+From Windows or Linux:
+
+https://store.maafa.com
+
+
+✔ Page loads
+✔ Browser warning is EXPECTED (self-signed cert)
+✔ Click Advanced → Continue
+
+ WHAT THE LAB / EXAM CARES ABOUT
+
+HTTPS works
+
+Apache uses TLS
+
+Certificate + key configured correctly
+
+Warning is acceptable (self-signed)
+
+ Green lock is NOT required

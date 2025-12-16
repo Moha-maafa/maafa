@@ -1,0 +1,108 @@
+CTIVITY 6 – ACCESSING THE SAMBA SHARE FROM WINDOWS
+
+ASSUMPTIONS
+• Samba server hostname: storage
+• Share name: ramones
+• Writer user: joey
+• Non-writer user: marky
+• Password used is the Samba password
+
+PART A – WRITER USER TEST (joey)
+
+Open PowerShell as Administrator
+Right-click Start → Windows Terminal (Admin) or PowerShell (Admin)
+
+Map the Samba share as writer
+
+New-SmbMapping -LocalPath Z: -RemotePath \\storage\ramones -UserName joey -Password password
+
+
+(Replace storage, joey, and password if needed.)
+
+Navigate to the mapped drive
+
+cd Z:\
+dir
+
+
+Test WRITE access (should succeed)
+
+mkdir testdir
+echo test > test.txt
+dir
+
+
+Expected result:
+Directory and file are created successfully.
+This confirms the writers group has write access.
+
+Disconnect the share
+
+Remove-SmbMapping -RemotePath \\storage\ramones
+
+
+Press Enter to confirm.
+
+PART B – ALTERNATIVE ACCESS METHOD (OPTIONAL)
+
+Map the share again
+
+New-SmbMapping -LocalPath Z: -RemotePath \\storage\ramones -UserName joey -Password password
+
+
+Access using UNC path
+
+cd \\storage\ramones\
+dir
+
+
+Disconnect
+
+Remove-SmbMapping -RemotePath \\storage\ramones
+
+
+PART C – NON-WRITER USER TEST (marky)
+
+Map the share as non-writer
+
+New-SmbMapping -LocalPath Z: -RemotePath \\storage\ramones -UserName marky -Password password
+
+
+Attempt to write (should FAIL)
+
+cd Z:\
+mkdir faildir
+
+
+Expected result:
+
+Access is denied
+
+
+This confirms permissions are enforced correctly.
+
+Disconnect
+
+Remove-SmbMapping -RemotePath \\storage\ramones
+
+
+PART D – WINDOWS VERIFICATION COMMANDS (SCREENSHOT)
+
+Run the following
+
+Get-SmbConnection
+Get-Date
+hostname
+
+
+Purpose:
+Shows active SMB connection, current date, and Windows hostname.
+
+PART E – LINUX SERVER VERIFICATION
+
+On the Samba server, run
+
+hostname
+whoami
+date
+smbstatus -b

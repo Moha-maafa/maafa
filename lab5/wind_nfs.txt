@@ -1,0 +1,100 @@
+NFS ACCESS FROM WINDOWS (EXAM / LAB STYLE)
+
+IMPORTANT NOTES
+• Do this ONLY if the lab or exam explicitly asks for Windows NFS
+• Linux-to-Linux NFS is more common
+• Windows NFS requires UID/GID mapping (this is the key part)
+
+PART A – WINDOWS: ENABLE NFS CLIENT
+
+Open Control Panel
+
+Go to
+Programs → Turn Windows features on or off
+
+Enable the following
+Services for NFS
+Client for NFS
+
+Click OK
+
+Reboot Windows
+(Reboot is required)
+
+PART B – LINUX NFS SERVER: FIND UID AND GID
+
+On the Linux NFS server, run
+stat /media/nfs1/weezer
+
+Write down the numbers shown
+Example output:
+Uid: (1000/student)
+Gid: (1000/student)
+
+You need the NUMBERS only (example: 1000 and 1000).
+
+PART C – WINDOWS: SET UID/GID IN REGISTRY
+
+Open Registry Editor
+Press:
+Win + R
+Type:
+regedit
+
+Navigate to
+HKEY_LOCAL_MACHINE
+SOFTWARE
+Microsoft
+ClientForNFS
+CurrentVersion
+Default
+
+Create UID entry
+Right-click → New → DWORD (32-bit) Value
+Name:
+AnonymousUid
+Value:
+UID from Linux (decimal)
+
+Create GID entry
+Right-click → New → DWORD (32-bit) Value
+Name:
+AnonymousGid
+Value:
+GID from Linux (decimal)
+
+Reboot Windows
+(This step is mandatory)
+
+PART D – WINDOWS: MOUNT NFS SHARE
+
+Open Command Prompt as Administrator
+
+Mount the NFS share
+mount -o anon storage:/media/nfs1/weezer Z:
+
+Notes:
+storage = Linux hostname or IP
+Z: = any free drive letter
+
+Verify mount
+Z:
+dir
+
+You should see files or an empty directory.
+
+Create a test file
+echo windows test > winfile.txt
+dir
+
+PART E – LINUX: VERIFY ACCESS (REQUIRED)
+
+On the Linux server, run
+ls -la /media/nfs1/weezer
+
+Check ownership
+stat /media/nfs1/weezer/winfile.txt
+
+You must see:
+• File exists
+• UID and GID match what you configured

@@ -1,0 +1,104 @@
+File sharing Network File System
+
+
+
+Goal:
+
+Configure NFS on Rocky Linux
+
+Export a directory
+
+Access it from a client
+
+Verify it works
+
+1️ Install NFS packages (server)
+dnf install -y nfs-utils
+
+2️ Start & enable NFS services
+systemctl enable --now nfs-server
+
+
+Check:
+
+systemctl status nfs-server
+
+3️ Configure the firewall
+firewall-cmd --add-service=nfs --permanent
+firewall-cmd --add-service=mountd --permanent
+firewall-cmd --add-service=rpc-bind --permanent
+firewall-cmd --reload
+
+
+Verify:
+
+firewall-cmd --list-services
+
+
+You should see:
+
+nfs mountd rpc-bind
+
+4️ (Temporary) SELinux off (exam-safe)
+setenforce 0
+
+5️ Create the shared directory (server)
+mkdir -p /srv/nfs/shared
+chmod 777 /srv/nfs/shared
+
+
+Create a test file:
+
+echo "NFS test" > /srv/nfs/shared/test.txt
+
+6️ Configure NFS exports
+
+Edit:
+
+nano /etc/exports
+
+
+Add:
+
+/srv/nfs/shared *(rw,sync,no_root_squash)
+
+
+Apply exports:
+
+exportfs -ra
+
+
+Verify:
+
+exportfs -v
+
+7️ Test from a Linux client
+Install client tools
+dnf install -y nfs-utils
+
+Create mount point
+mkdir /mnt/nfs
+
+Mount the share
+mount server:/srv/nfs/shared /mnt/nfs
+
+
+(Replace server with hostname or IP)
+
+8️ Verify access
+ls /mnt/nfs
+cat /mnt/nfs/test.txt
+
+
+Test write:
+
+echo "client write test" > /mnt/nfs/client.txt
+ls /mnt/nfs
+
+
+ If this works → NFS is correct.
+
+9️ Unmount (optional)
+umount /mnt/nfs
+
+ netstat -an | grep 192.168.4.5:2049

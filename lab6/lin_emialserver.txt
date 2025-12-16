@@ -1,0 +1,146 @@
+STEP 0 — Become root
+sudo -i
+
+🔹 STEP 1 — Set hostname (VERY IMPORTANT)
+
+Pick one and be consistent.
+
+Example:
+
+hostnamectl set-hostname mail.maafa.com
+
+
+Verify:
+
+hostname
+
+
+Expected:
+
+mail.maafa.com
+
+🔹 STEP 2 — Install email packages
+dnf install -y postfix mailx
+
+
+Verify:
+
+rpm -q postfix mailx
+
+🔹 STEP 3 — Enable & start Postfix
+systemctl enable --now postfix
+
+
+Verify:
+
+systemctl status postfix
+
+
+You MUST see:
+
+Active: active (running)
+
+🔹 STEP 4 — Configure Postfix (LAB REQUIRED)
+
+Edit config:
+
+nano /etc/postfix/main.cf
+
+Set / confirm these values (EXACT STYLE)
+myhostname = mail.maafa.com
+mydomain = maafa.com
+myorigin = $mydomain
+inet_interfaces = all
+mydestination = $myhostname, localhost.$mydomain, localhost, $mydomain
+
+
+📌 Notes:
+
+inet_interfaces = all → server listens on network
+
+mydestination → allows local delivery
+
+Save & exit.
+
+🔹 STEP 5 — Restart Postfix
+systemctl restart postfix
+
+
+Verify again:
+
+systemctl status postfix
+
+🔹 STEP 6 — Open firewall for SMTP (EXAM SAFE)
+
+Even if local delivery works, lab usually expects this.
+
+firewall-cmd --add-service=smtp --permanent
+firewall-cmd --reload
+
+
+Verify:
+
+firewall-cmd --list-services
+
+
+You should see:
+
+smtp
+
+🔹 STEP 7 — Create mail users (SERVER-SIDE PREP)
+
+Create users that clients will use later:
+
+useradd alice
+useradd bob
+
+
+Set passwords:
+
+passwd alice
+passwd bob
+
+🔹 STEP 8 — Verify mail directories (SERVER CHECK)
+ls /var/spool/mail
+
+
+You should see:
+
+alice
+bob
+
+
+(or files appear after first email)
+
+🔹 STEP 9 — Quick LOCAL test (server only, optional but good)
+
+Send mail locally:
+
+echo "Server mail test" | mail -s "Test" bob
+
+
+Read:
+
+mail
+
+
+If you see the message → server is working
+
+✅ SERVER IS NOW READY
+
+At this point:
+✔ Postfix installed
+✔ Running
+✔ Firewall open
+✔ Users created
+✔ Mail delivery works locally
+
+👉 NOW you are ready to add:
+
+Linux client
+
+Windows client
+
+🧠 What to say in the exam (SERVER PART)
+
+“I installed and configured Postfix on the server, set the hostname and domain, enabled SMTP, created local users, and verified mail deliver

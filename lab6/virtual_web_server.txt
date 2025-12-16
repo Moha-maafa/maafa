@@ -1,0 +1,137 @@
+APACHE VIRTUAL HOSTS – ROCKY LINUX
+GOAL
+Install Apache on Rocky Linux
+Create two virtual web servers
+Access them from a Windows client
+
+PART 1 – INSTALL AND START APACHE (SERVER: liny)
+
+Install Apache
+dnf install -y httpd
+
+Enable and start Apache
+systemctl enable --now httpd
+
+Verify Apache is running
+systemctl status httpd
+
+PART 2 – OPEN FIREWALL FOR HTTP
+
+Allow HTTP through firewall
+firewall-cmd --add-service=http --permanent
+
+Reload firewall
+firewall-cmd --reload
+
+Verify firewall
+firewall-cmd --list-services
+You must see: http
+
+PART 3 – CREATE VIRTUAL HOST DIRECTORIES
+
+Create directories
+mkdir -p /var/www/site1
+mkdir -p /var/www/site2
+
+Create test pages
+echo "This is Site 1" > /var/www/site1/index.html
+echo "This is Site 2" > /var/www/site2/index.html
+
+Set permissions
+chmod -R 755 /var/www/site1 /var/www/site2
+
+PART 4 – CONFIGURE APACHE VIRTUAL HOSTS
+
+Create virtual host config file
+nano /etc/httpd/conf.d/vhosts.conf
+
+Add the following configuration
+
+<VirtualHost *:80>
+ServerName site1.maafa.com
+DocumentRoot /var/www/site1
+</VirtualHost>
+
+<VirtualHost *:80>
+ServerName site2.maafa.com
+DocumentRoot /var/www/site2
+</VirtualHost>
+
+Save and exit
+CTRL + O → Enter
+CTRL + X
+
+Restart Apache
+systemctl restart httpd
+
+PART 5 – DNS CONFIGURATION (WINDOWS DNS SERVER)
+
+IMPORTANT RULE
+• Keep ONE real A record for the web server
+• Websites use CNAMEs
+
+Verify existing A record (DO NOT DELETE)
+liny A 192.168.4.12
+
+Create CNAME for site1
+Right-click maafa.com → New Alias (CNAME)
+
+Alias name: site1
+Target FQDN:
+liny.maafa.com
+
+Create CNAME for site2
+Right-click maafa.com → New Alias (CNAME)
+
+Alias name: site2
+Target FQDN:
+liny.maafa.com
+
+FINAL DNS STATE (THIS IS CORRECT)
+
+server A 192.168.4.1
+liny A 192.168.4.12
+moi A 192.168.4.11
+site1 CNAME liny.maafa.com
+site2 CNAME liny.maafa.com
+
+PART 6 – TEST FROM LINUX (OPTIONAL BUT SMART)
+
+Test DNS
+ping site1.maafa.com
+ping site2.maafa.com
+
+Test web content
+curl http://site1.maafa.com
+
+curl http://site2.maafa.com
+
+Expected output:
+This is Site 1
+This is Site 2
+
+PART 7 – TEST FROM WINDOWS CLIENT (moi)
+
+OPTION 1 – Command Prompt
+
+Test DNS
+ping site1.maafa.com
+ping site2.maafa.com
+
+Test web access
+curl http://site1.maafa.com
+
+curl http://site2.maafa.com
+
+OPTION 2 – Browser (WHAT PROF LIKES)
+
+Open browser and go to:
+http://site1.maafa.com
+
+http://site2.maafa.com
+
+Both pages must load correctly.
+
+ONE-SENTENCE EXAM ANSWER
+
+I configured Apache name-based virtual hosts and used DNS CNAME records so multiple websites resolve to the same web server IP.

@@ -124,3 +124,15 @@ On Windows File Explorer, enter
 
 
 \\hostname\ramones
+
+Option 2: PowerShell (New-PSDrive)
+
+This is more “PowerShell-native”.
+
+New-PSDrive -Name R -PSProvider FileSystem -Root \\hostname\ramones -Credential johnny -Persist
+
+
+Then:
+
+R:
+dir
